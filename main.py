@@ -4,6 +4,8 @@ import tkinter as tk
 
 def generate_massive(a, b):
     A = [random.randint(a, b) for x in range(2000)]
+    with open('Massive.txt', 'w') as f:
+        f.write('\n'.join(map(str, A)))
     return A
 
 
@@ -175,7 +177,7 @@ title.place(x=50, y=70)
 y_pos = 110
 for name_sort, t in results:
     label = tk.Label(win, text=f"{name_sort}: {t:.6f} сек",
-                    font=('Courier New', 11), anchor='w')
+                    font=('Arial', 11), anchor='w')
     label.place(x=50, y=y_pos, width=500)
     y_pos += 35
 
