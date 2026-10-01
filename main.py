@@ -1,5 +1,6 @@
 import random  # noqa: I001
 import time
+import tkinter as tk
 
 def generate_massive(a, b):
     A = [random.randint(a, b) for x in range(2000)]
@@ -87,7 +88,7 @@ def find_end_run(arr, i):
             break
     return i
 
-def tim_sort(arr, minrun=4):
+def tim_sort(arr, minrun=32):
     n = len(arr)
     
     i = 0
@@ -109,20 +110,73 @@ def tim_sort(arr, minrun=4):
     
     return arr
 
-A = generate_massive(100, 5000)
-print(A)
+
+def odd_even_sort(arr):
+    n = len(arr)
+    swap = True
+    while swap:
+        swap = False
+        for i in range(0, n - 1, 2):
+            if arr[i] > arr[i + 1]:
+                arr[i], arr[i+1] = arr[i+1], arr[i]
+                swap = True
+        for i in range(1, n - 1, 2):
+            if arr[i] > arr[i + 1]:
+                arr[i], arr[i+1] = arr[i+1], arr[i]
+                swap = True
+    return arr
+        
+
+win = tk.Tk()
+win.geometry('700x600')
+win.title('Sorts')
+
+name = tk.Label(win, text='Сортировка массива А длиной 2000 с диапазоном чисел [100; 2500]',
+                font=('Arial', 12, 'bold'))
+name.place(x=50, y=20)
+
+A = generate_massive(100, 2500)
 A_tim = A.copy()
 A_heap = A.copy()
 A_bubble = A.copy()
+A_odd_ev = A.copy()
+A_sort = A.copy()
+
+results = []  
+
 start = time.time()
 tim_sort(A_tim)
 end = time.time()
-print(f"Timsort: {end - start:.6f} сек")
+results.append(("Timsort", end - start))
+
 start = time.time()
 Heap_Sort(A_heap)
 end = time.time()
-print(f"Heap Sort: {end - start:.6f} сек")
+results.append(("Heap Sort", end - start))
+
 start = time.time()
 bubble_sort(A_bubble)
 end = time.time()
-print(f"Bubble Sort: {end - start:.6f} сек")
+results.append(("Bubble Sort", end - start))
+
+start = time.time()
+odd_even_sort(A_odd_ev)
+end = time.time()
+results.append(("Odd-Even Sort", end - start))
+
+start = time.perf_counter()
+A_sort.sort()
+end = time.perf_counter()
+results.append(("Встроенная sorted()", end - start))
+
+title = tk.Label(win, text='Результаты сортировки:', font=('Arial', 12, 'bold'))
+title.place(x=50, y=70)
+
+y_pos = 110
+for name_sort, t in results:
+    label = tk.Label(win, text=f"{name_sort}: {t:.6f} сек",
+                    font=('Courier New', 11), anchor='w')
+    label.place(x=50, y=y_pos, width=500)
+    y_pos += 35
+
+win.mainloop()
